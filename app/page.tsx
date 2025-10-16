@@ -180,9 +180,6 @@ const QuizGame: React.FC = () => {
           <h1 className="text-3xl md:text-5xl font-extrabold text-m-purple mb-4 animate-fade-in-up">
             AI thông minh hơn nhân viên Midu
           </h1>
-          <p className="text-gray-600 mb-12 animate-fade-in-up">
-            Chọn chủ đề để xem câu hỏi và bắt đầu trò chơi.
-          </p>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-8">
             {data.topics.map((topic) => (
               <TopicCard
