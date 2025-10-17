@@ -141,9 +141,7 @@ const QuizGame: React.FC = () => {
       setIsTimerRunning(false);
       stopTick();
       stopBgMusic();
-      if (score % 4 === 0) {
-        playExactly();
-      } else playCorrect();
+      playExactly();
       setTimeout(() => {
         setQuizState("win");
         playVictory();
