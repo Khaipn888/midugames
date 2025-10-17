@@ -192,9 +192,7 @@ const QuizGame: React.FC = () => {
     setScore(newScore);
     if (actionType === "correct") {
       setTimerResetKey((prev) => prev + 1); // Kích hoạt reset timer
-      if (score % 4 === 0) {
-        playExactly();
-      } else playCorrect();
+      playCorrect();
     } else if (actionType === "wrong") {
       playWrong();
     }
