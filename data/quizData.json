@@ -1,46 +1,46 @@
 {
   "topics": [
-    { "id": 1, "name": "Văn học", "icon": "📚", "color": "bg-m-purple" },
-    { "id": 2, "name": "Đất nước", "icon": "🗺️", "color": "bg-m-fuchsia" },
-    { "id": 3, "name": "Gia đình", "icon": "❤️", "color": "bg-m-purple" },
+    { "id": 1, "name": "Thực vật", "icon": "🌿", "color": "bg-m-purple" },
+    { "id": 2, "name": "Đất nước", "icon": "⭐️", "color": "bg-m-fuchsia" },
+    { "id": 3, "name": "Phụ nữ", "icon": "👩🏼", "color": "bg-m-purple" },
     { "id": 4, "name": "Hoạt động", "icon": "🏃", "color": "bg-m-fuchsia" },
     { "id": 5, "name": "Thế giới", "icon": "🌎", "color": "bg-m-purple" },
-    { "id": 6, "name": "Sinh vật", "icon": "🐠", "color": "bg-m-fuchsia" }
+    { "id": 6, "name": "Động vật", "icon": "🐠", "color": "bg-m-fuchsia" }
   ],
   "questions": [
     {
       "topicId": 1,
-      "question": "Tác phẩm nào của Nguyễn Du được UNESCO công nhận là Di sản văn hóa phi vật thể?",
+      "question": "Kể tên những loại quả có 1 hạt",
       "options": [],
       "correctAnswerIndex": 0
     },
     {
       "topicId": 2,
-      "question": "Thủ đô của Australia là gì?",
+      "question": "Kể tên các ngày lễ",
       "options": [],
       "correctAnswerIndex": 0
     },
     {
       "topicId": 3,
-      "question": "Thành viên nào trong gia đình có vai trò quan trọng nhất trong việc giữ gìn truyền thống?",
+      "question": "Kể tên các loài hoa",
       "options": [],
       "correctAnswerIndex": 0
     },
     {
       "topicId": 4,
-      "question": "Môn thể thao nào yêu cầu người chơi sử dụng cả tay và chân để di chuyển bóng?",
+      "question": "Kể tên các môn thể thao",
       "options": [],
       "correctAnswerIndex": 0
     },
     {
       "topicId": 5,
-      "question": "Dãy núi dài nhất thế giới là gì?",
+      "question": "Kể tên các đất nước trên thế giới",
       "options": [],
       "correctAnswerIndex": 0
     },
     {
       "topicId": 6,
-      "question": "Động vật có vú duy nhất biết bay là gì?",
+      "question": "Kể tên những loài chim",
       "options": [],
       "correctAnswerIndex": 0
     }

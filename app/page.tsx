@@ -11,7 +11,7 @@ import { useAudioContext } from "@/hooks/useAudioContext";
 
 const data: QuizData = quizData as QuizData;
 
-const TIME_PER_QUESTION = 5;
+const TIME_PER_QUESTION = 7;
 
 // --- SoundToggleIcon Component (Giữ nguyên) ---
 const SoundToggleIcon: React.FC = () => {
@@ -54,7 +54,7 @@ const SoundToggleIcon: React.FC = () => {
   return (
     <button
       onClick={toggleMute}
-      className={`fixed bottom-8 right-8 p-4 rounded-full shadow-2xl transition-all duration-300 transform 
+      className={`fixed bottom-8 right-8 p-4 rounded-full shadow-2xl transition-all duration-300 transform cursor-pointer
                         ${
                           isMuted
                             ? "bg-gray-400 text-white hover:scale-105"
@@ -63,6 +63,36 @@ const SoundToggleIcon: React.FC = () => {
       aria-label={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
     >
       {isMuted ? MuteIcon : SpeakerIcon}
+    </button>
+  );
+};
+
+// --- ResetTopicsButton Component ---
+const ResetTopicsButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  const ResetIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4 4v5h5M5.23 9.23a9 9 0 0113.54 0M20 20v-5h-5M18.77 14.77a9 9 0 01-13.54 0"
+      />
+    </svg>
+  );
+
+  return (
+    <button
+      onClick={onClick}
+      className="fixed bottom-8 left-8 p-4 rounded-full shadow-2xl transition-all duration-300 transform bg-blue-500 text-white hover:bg-blue-600 hover:scale-110 cursor-pointer"
+      aria-label="Chơi lại từ đầu"
+    >
+      {ResetIcon}
     </button>
   );
 };
@@ -76,6 +106,7 @@ const QuizGame: React.FC = () => {
   const [quizState, setQuizState] = useState<QuizState>("topics");
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerResetKey, setTimerResetKey] = useState(0); // State để reset timer
+  const [playedTopicIds, setPlayedTopicIds] = useState<Set<number>>(new Set());
 
   // --- Âm thanh ---
   // VUI LÒNG ĐẢM BẢO CÁC FILE NÀY TỒN TẠI VỚI ĐÚNG TÊN HOẶC ĐỔI LẠI ĐÚNG TÊN CỦA BẠN
@@ -83,10 +114,13 @@ const QuizGame: React.FC = () => {
   const { play: playTick, stop: stopTick } = useSound("/sounds/tick.mp3");
   const { play: playCorrect } = useSound("/sounds/correct.mp3");
   const { play: playWrong } = useSound("/sounds/incorrect.wav");
-  const { play: playTimeUp } = useSound("/sounds/time_up.mp3");
-  const { play: playVictory, stop: stopVictory} = useSound("/sounds/victory1.mp3");
+  const { play: playFaile } = useSound("/sounds/faile.mp3");
+  const { play: playExactly } = useSound("/sounds/qua_chuan_luon.mp3");
+  const { play: playVictory, stop: stopVictory } = useSound(
+    "/sounds/victory1.mp3"
+  );
   const { play: playBgMusic, stop: stopBgMusic } = useSound(
-    "/sounds/bg_music.mp3",
+    "/sounds/bg_music_2.mp3",
     true
   );
 
@@ -107,11 +141,13 @@ const QuizGame: React.FC = () => {
       setIsTimerRunning(false);
       stopTick();
       stopBgMusic();
-      playCorrect();
+      if (score % 4 === 0) {
+        playExactly();
+      } else playCorrect();
       setTimeout(() => {
         setQuizState("win");
-        playVictory()
-      } , 500);
+        playVictory();
+      }, 500);
     }
     // Dependency array đã được kiểm tra và an toàn
   }, [score, targetScore, quizState, isTimerRunning, playCorrect, stopBgMusic]);
@@ -126,6 +162,7 @@ const QuizGame: React.FC = () => {
     setScore(0);
     setTargetScore(0);
     setIsTimerRunning(false);
+    setPlayedTopicIds((prev) => new Set(prev).add(topic.id));
 
     playSelect();
     setTimeout(() => {
@@ -143,7 +180,7 @@ const QuizGame: React.FC = () => {
   const handleTimeUp = () => {
     setIsTimerRunning(false);
     stopTick();
-    playTimeUp();
+    playFaile();
     setQuizState("lose");
   };
 
@@ -155,7 +192,9 @@ const QuizGame: React.FC = () => {
     setScore(newScore);
     if (actionType === "correct") {
       setTimerResetKey((prev) => prev + 1); // Kích hoạt reset timer
-      playCorrect();
+      if (score % 4 === 0) {
+        playExactly();
+      } else playCorrect();
     } else if (actionType === "wrong") {
       playWrong();
     }
@@ -171,14 +210,18 @@ const QuizGame: React.FC = () => {
     setIsTimerRunning(false);
   };
 
+  const handleResetTopics = () => {
+    setPlayedTopicIds(new Set());
+  };
+
   // --- Rendering ---
 
   const renderContent = () => {
     if (quizState === "topics") {
       return (
         <div>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-m-purple mb-4 animate-fade-in-up">
-            AI thông minh hơn nhân viên Midu
+          <h1 className="text-3xl md:text-5xl font-extrabold text-m-purple mb-16 animate-fade-in-up uppercase">
+            Siêu trí tuệ Midu
           </h1>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-8">
             {data.topics.map((topic) => (
@@ -186,6 +229,7 @@ const QuizGame: React.FC = () => {
                 key={topic.id}
                 topic={topic}
                 onSelect={handleSelectTopic}
+                isDisabled={playedTopicIds.has(topic.id)}
               />
             ))}
           </div>
@@ -196,10 +240,10 @@ const QuizGame: React.FC = () => {
     if (quizState === "preview" && selectedTopic && currentQuestion) {
       return (
         <div className="flex flex-col items-center w-full max-w-2xl bg-white p-8 md:p-12 rounded-2xl shadow-2xl animate-fade-in-up">
-          <h3 className="text-2xl font-semibold text-m-fuchsia mb-2 uppercase">
+          <h3 className="text-2xl font-semibold text-m-purple mb-5 uppercase ">
             CHỦ ĐỀ: {selectedTopic.name}
           </h3>
-          <h2 className="text-xl font-bold text-gray-800 text-center mb-6">
+          <h2 className="text-xl font-bold text-black text-center mb-6">
             {currentQuestion.question}
           </h2>
 
@@ -304,10 +348,13 @@ const QuizGame: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center py-16 px-4 font-sans">
-      <div className="container max-w-6xl text-center flex justify-center">
+    <main className="min-h-screen flex flex-col items-center py-16 px-4 font-sans justify-center">
+      <div className="container max-w-6xl text-center flex justify-center items-center">
         {renderContent()}
       </div>
+      {quizState === "topics" && playedTopicIds.size > 0 && (
+        <ResetTopicsButton onClick={handleResetTopics} />
+      )}
       <SoundToggleIcon />
     </main>
   );

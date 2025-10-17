@@ -30,6 +30,8 @@ const ScoreControls: React.FC<ScoreControlsProps> = ({
         if (score > 0) {
           onUpdateScore(score - 1, "wrong");
         }
+      } else if (event.key === "ArrowLeft") {
+        onUpdateScore(score, "wrong");
       }
     };
 
@@ -77,8 +79,7 @@ const ScoreControls: React.FC<ScoreControlsProps> = ({
           >
             {`${score}/${targetScore}`}
           </span>
-          <span className="mt-2 text-xs text-gray-400">
-          </span>
+          <span className="mt-2 text-xs text-gray-400"></span>
         </div>
       )}
     </div>
